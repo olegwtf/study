@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+
+use lib 'lib';
+use Parser;
+
+print Parser::parse(shift || die "usage: $0 expression")->calculate(), "\n";
