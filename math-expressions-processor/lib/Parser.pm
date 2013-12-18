@@ -16,7 +16,7 @@ sub _parse {
 	
 	while (pos($$str_ref) < length $$str_ref) {
 		if ($$str_ref =~ /\G([+-]?\d+)/gc) {
-			$proc->add_operand($1);
+			$proc->add_operand(int($1));
 		}
 		elsif ($$str_ref =~ /\G\(/gc) {
 			$proc->add_operand(_parse($str_ref, 1));

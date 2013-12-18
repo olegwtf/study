@@ -30,12 +30,12 @@ sub validate {
 
 my @ops = (
 	{
-		* => sub { $_[0]*$_[1] },
-		/ => sub { $_[0]/$_[1] }
+		'*' => sub { $_[0]*$_[1] },
+		'/' => sub { $_[0]/$_[1] }
 	},
 	{
-		+ => sub { $_[0]+$_[1] },
-		- => sub { $_[0]-$_[1] }
+		'+' => sub { $_[0]+$_[1] },
+		'-' => sub { $_[0]-$_[1] }
 	}
 	
 );
@@ -44,23 +44,29 @@ sub calculate {
 	my $self = shift;
 	my $result;
 	
+	return ref $self->{operands}[0] ? $self->{operands}[0]->calculate() : $self->{operands}[0]
+		unless @{$self->{operations}};
+	
 	for my $ops (@ops) {
-		for (my $i=$#{$self->{operations}}; $i>=0; $i--) {
+		for (my $i=0; $i<@{$self->{operations}}; $i++) {
 			if (exists $ops->{$self->{operations}[$i]}) {
 				$result = $ops->{$self->{operations}[$i]}->(
 					map {
 						ref $_ ? $_->calculate() : $_
 					}
-					$self->{operands}[$i+1],
-					$self->{operands}[$i];
+					$self->{operands}[$i],
+					$self->{operands}[$i+1]
 				);
 				
-				$self->{operands}[$i] = $result;
-				splice @{$self->{operands}}, $i+1, 1;
+				$self->{operands}[$i+1] = $result;
+				splice @{$self->{operands}}, $i, 1;
 				splice @{$self->{operations}}, $i, 1;
+				$i--;
 			}
 		}
 	}
+	
+	$result;
 }
 
 1;
