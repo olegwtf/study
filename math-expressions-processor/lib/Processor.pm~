@@ -51,13 +51,7 @@ sub calculate {
 					map {
 						ref $_ ? $_->calculate() : $_
 					}
-					$self->{operands}[$i+1],
-					$self->{operands}[$i];
 				);
-				
-				$self->{operands}[$i] = $result;
-				splice @{$self->{operands}}, $i+1, 1;
-				splice @{$self->{operations}}, $i, 1;
 			}
 		}
 	}
